@@ -16,7 +16,7 @@ const app = Vue.createApp({
     return {
       products: [],
       temProduct: {
-        imagesUrl: [],
+        imageUrl: "",
       },
       pagination: {},
     };
@@ -132,18 +132,19 @@ app.component("productModal", {
       this.temProduct.imagesUrl.splice(index, 1);
     },
     addImage() {
-      let newImg = this.temProduct.imageUrl.match(/https:\/\/.+/);
-      console.log(newImg);
-      console.log(this.temProduct.imageUrl);
-      console.log(this.temProduct.imagesUrl);
-      if (newImg === null) {
-        alert("請輸入圖片網址!");
-        this.temProduct.imageUrl = "";
-        return;
-      }
-      this.temProduct.imagesUrl.push(this.temProduct.imageUrl);
-      this.temProduct.imageUrl = "";
-      alert("已新增圖片，請按確認完成存檔!");
+      axios
+        .get(this.temProduct.imageUrl) // 代入圖片 url，如果成功就會跑進 .then 區塊，失敗就會進 catch
+        .then((res) => {
+          console.log(res);
+          this.temProduct.imagesUrl.push(this.temProduct.imageUrl);
+          this.temProduct.imageUrl = "";
+          alert("已新增圖片，請按確認完成存檔!");
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("請輸入正確的圖片網址!");
+          this.temProduct.imageUrl = "";
+        });
     },
   },
 });

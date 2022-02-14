@@ -8,9 +8,10 @@ const app = {
       apiUrl: "https://vue3-course-api.hexschool.io/v2",
       apiPath: "johntext",
       products: [],
-      temProduct: {},
+      temProduct: {
+        imageUrl: "",
+      },
       isNew: false,
-      addImg: "",
     };
   },
   mounted() {
@@ -109,15 +110,20 @@ const app = {
       this.temProduct.imagesUrl.splice(index, 1);
     },
     addImage() {
-      let newImg = this.addImg.match(/http:\/\/.+/);
-      if (newImg === null) {
-        alert("請輸入圖片網址!");
-        this.addImg = "";
-        return;
-      }
-      this.temProduct.imagesUrl.push(this.addImg);
-      this.addImg = "";
-      alert("已新增圖片，請按確認完成存檔!");
+      axios
+        .get(this.temProduct.imageUrl)
+        .then((res) => {
+          console.log(res);
+          console.log("hi");
+          this.temProduct.imagesUrl.push(this.temProduct.imageUrl);
+          this.temProduct.imageUrl = "";
+          alert("已新增圖片，請按確認完成存檔!");
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("請輸入正確的圖片網址!");
+          this.temProduct.imageUrl = "";
+        });
     },
   },
 };
