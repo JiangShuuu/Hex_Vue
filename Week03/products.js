@@ -15,27 +15,27 @@ const app = {
     };
   },
   mounted() {
-    const token = document.cookie.replace(
-      /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    axios.defaults.headers.common["Authorization"] = token;
     this.checkAdmin();
-    productModal = new bootstrap.Modal(
-      document.getElementById("productModal"),
-      {
-        keyboard: false,
-      }
-    );
-    delProductModal = new bootstrap.Modal(
-      document.getElementById("delProductModal"),
-      {
-        keyboard: false,
-      }
-    );
   },
   methods: {
     checkAdmin() {
+      const token = document.cookie.replace(
+        /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      );
+      axios.defaults.headers.common["Authorization"] = token;
+      productModal = new bootstrap.Modal(
+        document.getElementById("productModal"),
+        {
+          keyboard: false,
+        }
+      );
+      delProductModal = new bootstrap.Modal(
+        document.getElementById("delProductModal"),
+        {
+          keyboard: false,
+        }
+      );
       const url = `${this.apiUrl}/api/user/check`;
       axios
         .post(url)
