@@ -91,7 +91,13 @@
           </table>
           <!-- 購物車列表 -->
           <div class="text-end">
-            <button class="btn btn-outline-danger" type="button">
+            <!--  -->
+            <button
+              class="btn btn-outline-danger"
+              type="button"
+              @click="cleanCart"
+              :disabled="cartData.carts.length === 0"
+            >
               清空購物車
             </button>
           </div>
@@ -167,15 +173,20 @@
                 <td colspan="3" class="text-end">總計</td>
                 <td class="text-end">{{ cartData.total }}</td>
               </tr>
-              <tr>
+              <!-- <tr>
                 <td colspan="3" class="text-end text-success">折扣價</td>
                 <td class="text-end text-success">{{ }}</td>
-              </tr>
+              </tr> -->
             </tfoot>
           </table>
         </div>
-        <!-- <div class="my-5 row justify-content-center">
-          <v-form ref="form" class="col-md-6" v-slot="{ errors }">
+        <div class="my-5 row justify-content-center">
+          <v-form
+            ref="form"
+            class="col-md-6"
+            v-slot="{ errors }"
+            @submit="createOrder"
+          >
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
               <v-field
@@ -185,6 +196,8 @@
                 class="form-control"
                 :class="{ 'is-invalid': errors['email'] }"
                 placeholder="請輸入 Email"
+                rules="email|required"
+                v-model="form.user.email"
               ></v-field>
               <error-message
                 name="email"
@@ -202,6 +215,7 @@
                 :class="{ 'is-invalid': errors['姓名'] }"
                 placeholder="請輸入姓名"
                 rules="required"
+                v-model="form.user.name"
               ></v-field>
               <error-message
                 name="姓名"
@@ -218,6 +232,8 @@
                 class="form-control"
                 :class="{ 'is-invalid': errors['電話'] }"
                 placeholder="請輸入電話"
+                rules="required"
+                v-model="form.user.tel"
               ></v-field>
               <error-message
                 name="電話"
@@ -235,6 +251,7 @@
                 :class="{ 'is-invalid': errors['地址'] }"
                 placeholder="請輸入地址"
                 rules="required"
+                v-model="form.user.address"
               ></v-field>
               <error-message
                 name="地址"
@@ -249,13 +266,20 @@
                 class="form-control"
                 cols="30"
                 rows="10"
+                v-model="form.message"
               ></textarea>
             </div>
             <div class="text-end">
-              <button type="submit" class="btn btn-danger">送出訂單</button>
+              <button
+                type="submit"
+                class="btn btn-danger"
+                :disabled="Object.keys(errors).length > 0 || cartData.carts.length === 0"
+              >
+                送出訂單
+              </button>
             </div>
           </v-form>
-        </div> -->
+        </div>
       </div>
     </div>
     <script type="text/x-template" id="userProductModal">
@@ -273,15 +297,15 @@
             <div class="modal-body">
               <div class="row">
                 <div class="col-sm-6">
-                  <!-- <img class="img-fluid" :src="..." alt=""> -->
+                  <img class="img-fluid" :src="" alt="">
             </div>
                 <div class="col-sm-6">
                   <span class="badge bg-primary rounded-pill">{{  }}</span>
-                  <p>商品描述：{{  }}</p>
-                  <p>商品內容：{{  }}</p>
-                  <div class="h5">{{  }} 元</div>
-                  <del class="h6">原價 {{ }} 元</del>
-                  <div class="h5">現在只要 {{  }} 元</div>
+                  <p>商品描述：{{ product.description }}</p>
+                  <p>商品內容：{{ product.content }}</p>
+                  <div class="h5" v-if="product.origin_price === product.price">{{ product.price }} 元</div>
+                  <del class="h6">原價 {{ product.origin_price }} 元</del>
+                  <div class="h5">現在只要 {{ product.price }} 元</div>
                   <div>
                     <div class="input-group">
                       <input type="number" class="form-control"
